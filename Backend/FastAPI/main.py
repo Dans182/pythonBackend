@@ -4,7 +4,6 @@ from fastapi import FastAPI
 app = FastAPI()
 #Con esto estamos usando fastAPI
 @app.get("/")
-
 #Y aca una operación que nos dice hola fastAPI
 async def root():
     return "¡Hola FastAPI!"
@@ -14,3 +13,7 @@ async def root():
 # Si fuera síncrona, le tocaría esperar la respuesta del servidor, tarde lo que tarde
 # Por eso la asincronía, tiene que ir haciendo cosas en segundo plano e ir devolviendo datos
 
+
+@app.get("/url")
+async def root():
+    return {"url_curso": "https://mouredev.com/python"}
