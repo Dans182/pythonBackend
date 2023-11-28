@@ -28,13 +28,16 @@ async def usersjson():
 async def users():
     return users_list
 
+#Podemos llamar a un usuario por un Path o por un Query
+#Por medio de un Path
 @app.get("/user/{id}")
 async def user(id: int):
-    users = filter(lambda user: user.id == id, users_list) #Tiene primero un objeto user. Dentro de ese objeto, queremos que compare el campo id de esa clase user, con el ID que se para como parametro. A mayores le pasamos para que itere en la lista, por eso el users_list
-    try:
-        return list(users)[0] #El filter puede devolvernos varios objetos, es por esa razón que creamos una lista. En esa lista, le pasamos la variable users que nace a razón del filter
-    except:
-        return {"error": "No se ha encontrado el usuario"}
+    return search_user(id)
+    # users = filter(lambda user: user.id == id, users_list) #Tiene primero un objeto user. Dentro de ese objeto, queremos que compare el campo id de esa clase user, con el ID que se para como parametro. A mayores le pasamos para que itere en la lista, por eso el users_list
+    # try:
+    #     return list(users)[0] #El filter puede devolvernos varios objetos, es por esa razón que creamos una lista. En esa lista, le pasamos la variable users que nace a razón del filter
+    # except:
+    #     return {"error": "No se ha encontrado el usuario"}
 
 #El resultado que devuelve en la API es un listado, pero en nuestra operación nos interesa solo la primer concordancia
 #Lo hacemos con el list(users)[0]
@@ -59,3 +62,27 @@ async def user(id: int):
   "age": 30
 }]
 """
+
+# Por medio de un Query 
+@app.get("/userquery/")
+async def user(id: int):
+    return search_user(id)
+# Otro Query que la url es la misma que el del path
+@app.get("/user/")
+async def user(id: int):
+    return search_user(id)
+
+# @app.get("/userquery/")
+# async def user(id: int):
+#     users = filter(lambda user: user.id == id, users_list) #Tiene primero un objeto user. Dentro de ese objeto, queremos que compare el campo id de esa clase user, con el ID que se para como parametro. A mayores le pasamos para que itere en la lista, por eso el users_list
+#     try:
+#         return list(users)[0] #El filter puede devolvernos varios objetos, es por esa razón que creamos una lista. En esa lista, le pasamos la variable users que nace a razón del filter
+#     except:
+#         return {"error": "No se ha encontrado el usuario"}
+    
+def search_user(id: int):
+    users = filter(lambda user: user.id == id, users_list) #Tiene primero un objeto user. Dentro de ese objeto, queremos que compare el campo id de esa clase user, con el ID que se para como parametro. A mayores le pasamos para que itere en la lista, por eso el users_list
+    try:
+        return list(users)[0] #El filter puede devolvernos varios objetos, es por esa razón que creamos una lista. En esa lista, le pasamos la variable users que nace a razón del filter
+    except:
+        return {"error": "No se ha encontrado el usuario"}
