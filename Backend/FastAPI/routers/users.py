@@ -1,8 +1,8 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 #pydantic nos ayuda a definir una entidad
 
-app = FastAPI()
+router = APIRouter()
 
 # Creamos la entidad User()
 class User(BaseModel): # Este Basemodel como parámetro, nos está dando la capacidad de crear una entidad
@@ -16,7 +16,7 @@ users_list = [User(id = 1, name = "Daniel", surname = "Moure", url = "https://ww
               User(id = 2, name = "Euge", surname = "Bordenave", url = "https://www.google.com", age = 25),
               User(id = 3, name = "Reck", surname = "Jowar", url = "https://www.google.com", age = 30)]
 
-@app.get("/usersjson")
+@router.get("/usersjson")
 async def usersjson():
     return [{"name": "Daniel", "surname": "Gaiteiro", "url": "https:www.google.com", "age": 20},
             {"name": "Euge", "surname": "Bordenave", "url": "https:www.google.com", "age": 25},
@@ -24,13 +24,13 @@ async def usersjson():
 
 # Los JSON es una forma de estructurar datos que todos lo entiendan. Servidores, clientes, etc
 
-@app.get("/users")
+@router.get("/users")
 async def users():
     return users_list
 
 #Podemos llamar a un usuario por un Path o por un Query
 #Por medio de un Path
-@app.get("/user/{id}")
+@router.get("/user/{id}")
 async def user(id: int):
     return search_user(id)
     # users = filter(lambda user: user.id == id, users_list) #Tiene primero un objeto user. Dentro de ese objeto, queremos que compare el campo id de esa clase user, con el ID que se para como parametro. A mayores le pasamos para que itere en la lista, por eso el users_list
@@ -64,15 +64,15 @@ async def user(id: int):
 """
 
 # Por medio de un Query 
-@app.get("/userquery/")
+@router.get("/userquery/")
 async def user(id: int):
     return search_user(id)
 # Otro Query que la url es la misma que el del path
-@app.get("/user/")
+@router.get("/user/")
 async def user(id: int):
     return search_user(id)
 
-# @app.get("/userquery/")
+# @router.get("/userquery/")
 # async def user(id: int):
 #     users = filter(lambda user: user.id == id, users_list) #Tiene primero un objeto user. Dentro de ese objeto, queremos que compare el campo id de esa clase user, con el ID que se para como parametro. A mayores le pasamos para que itere en la lista, por eso el users_list
 #     try:
@@ -91,7 +91,7 @@ def search_user(id: int):
 # Los queries para los parametros que pueden NO ser necesarios para realizar la petición. Parámetros que pueden ir o no
 
 #Crear nuevo usuario
-@app.post("/user/", status_code=201) #codigo de respuesta por defecto
+@router.post("/user/", status_code=201) #codigo de respuesta por defecto
 async def user(user: User):
     if type(search_user(user.id)) == User:
         raise HTTPException(status_code = 204, detail="El usuario ya existe")
@@ -101,7 +101,7 @@ async def user(user: User):
         return user
 
 #Actualizar datos
-@app.put("/user/")
+@router.put("/user/")
 async def user(user: User):
     found = False
     for index, saved_user in enumerate(users_list):
@@ -114,7 +114,7 @@ async def user(user: User):
         return user
     
 #Eliminar datos
-@app.delete("/user/{id}")
+@router.delete("/user/{id}")
 async def user(id: int):
     found = False
     for index, saved_user in enumerate(users_list):

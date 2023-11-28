@@ -1,5 +1,7 @@
 # Importamos fastAPI
 from fastapi import FastAPI
+from routers import products, users
+
 # Instanciamos fastAPI
 app = FastAPI()
 #Con esto estamos usando fastAPI
@@ -13,6 +15,9 @@ async def root():
 # Si fuera síncrona, le tocaría esperar la respuesta del servidor, tarde lo que tarde
 # Por eso la asincronía, tiene que ir haciendo cosas en segundo plano e ir devolviendo datos
 
+#Routers
+app.include_router(products.router)
+app.include_router(users.router)
 
 @app.get("/url")
 async def root():
