@@ -1,6 +1,6 @@
 # Importamos fastAPI
 from fastapi import FastAPI
-from routers import products, users
+from routers import products, users, user, product
 
 # Instanciamos fastAPI
 app = FastAPI()
@@ -17,7 +17,9 @@ async def root():
 
 #Routers
 app.include_router(products.router)
+app.include_router(product.router)
 app.include_router(users.router)
+app.include_router(user.router)
 
 @app.get("/url")
 async def root():
