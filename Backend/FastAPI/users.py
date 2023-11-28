@@ -86,3 +86,14 @@ def search_user(id: int):
         return list(users)[0] #El filter puede devolvernos varios objetos, es por esa razón que creamos una lista. En esa lista, le pasamos la variable users que nace a razón del filter
     except:
         return {"error": "No se ha encontrado el usuario"}
+    
+# El Path se suele utilizar cuando se considera que es un parámetro obligatorio. Una url que es fija.
+# Los queries para los parametros que pueden NO ser necesarios para realizar la petición. Parámetros que pueden ir o no
+
+#Crear nuevo usuario
+@app.post("/user/")
+async def user(user: User):
+    if type(search_user(user.id)) == User:
+        return {"error": "El usuario ya existe"}
+    else:
+        users_list.append(user)
