@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 #pydantic nos ayuda a definir una entidad
 
@@ -91,10 +91,11 @@ def search_user(id: int):
 # Los queries para los parametros que pueden NO ser necesarios para realizar la petición. Parámetros que pueden ir o no
 
 #Crear nuevo usuario
-@app.post("/user/")
+@app.post("/user/", status_code=201) #codigo de respuesta por defecto
 async def user(user: User):
     if type(search_user(user.id)) == User:
-        return {"error": "El usuario ya existe"}
+        raise HTTPException(status_code = 204, detail="El usuario ya existe")
+        #return {"error": "El usuario ya existe"}
     else:
         users_list.append(user)
         return user
