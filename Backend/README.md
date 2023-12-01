@@ -3,6 +3,8 @@
 ## Instalar paquetes FastAPI
 
 pip install fastapi[all]
+pip install python-jose[cryptography]
+pip install passlib[bcrypt]
 
 ## Lanzar el servidor local
 
