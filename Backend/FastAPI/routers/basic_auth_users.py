@@ -8,7 +8,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 app = FastAPI()
 
 #Creamos una instancia de nuestro sistema de autenticación
-oath2 = OAuth2PasswordBearer(tokenUrl = "login")
+oauth2 = OAuth2PasswordBearer(tokenUrl = "login")
 class User(BaseModel):
     username: str
     full_name: str
@@ -45,7 +45,7 @@ def search_user_db(username: str):
     if username in users_db:
         return UserDB(**users_db[username])
 
-async def current_user(token: str = Depends(oath2)):
+async def current_user(token: str = Depends(oauth2)):
     user = search_user(token)
     if not user:
         raise HTTPException(

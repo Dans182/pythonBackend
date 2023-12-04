@@ -1,14 +1,18 @@
 from fastapi import FastAPI, Depends, HTTPException, status
 from pydantic import BaseModel
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from jose import jwt
+from jose import jwt, JWTError
 from passlib.context import CryptContext
+from datetime import datetime, timedelta
 
-ALGORITH = "HS256" #Seleccion de algoritmo de encriptación
+ALGORITHM = "HS256" #Seleccion de algoritmo de encriptación
+ACCESS_TOKEN_DURATION = 1
+#En terminal, de esta manera genero un secret openssl rand -hex 32
+SECRET = "bb8733a5834619c1b98b91ee5cc317b646a6937cee2decec006ce94d63748a55"
 
 app = FastAPI()
 
-oath2 = OAuth2PasswordBearer(tokenUrl = "login")
+oauth2 = OAuth2PasswordBearer(tokenUrl = "login")
 
 crypt = CryptContext(schemes=["bcrypt"]) #contexto de encriptación
 
@@ -21,21 +25,23 @@ class User(BaseModel):
 class UserDB(User): 
     password: str
 
-
+#Aca la contraseña es necesario que se encripte usando bcrypt, porque de esta manera no expones la misma en la db
+#Y se compara la contraseña ingresada por el usuario con la contraseña encriptada guardada en la db
+#y eso devuelve un hash, que es el token
 users_db = {
     "dans182": {
         "username": "dans182",
         "full_name": "Daniel Martinez",
         "email": "dans@xmail.com",
         "disable": False,
-        "password": "123456"
+        "password": "$2a$12$5OOZM9s2C8/PVtMdOAY54ueAPQCcDtPf08FdfFtVNvIC87ZDyDlqa"
     },
     "mouredev": {
         "username": "mouredev",
         "full_name": "Brais Moure",
         "email": "mourevev@xmail.com",
         "disable": True,
-        "password": "654321"
+        "password": "$2a$12$dWJrC6JzXz5T2WpvZFgfHeMuQJ.HrRRnbkMmULBdfAC5nhm7ygz4u"
     }
 }
 
@@ -47,20 +53,27 @@ def search_user_db(username: str):
     if username in users_db:
         return UserDB(**users_db[username])
 
-# async def current_user(token: str = Depends(oath2)):
-#     user = search_user(token)
-#     if not user:
-#         raise HTTPException(
-#             status_code=status.HTTP_401_UNAUTHORIZED,
-#             detail="Credenciales de autenticación inválidas", 
-#             headers={"WWW-Authenticate": "Bearer"})
+async def auth_user(token: str = Depends(oauth2)):
+    exception: HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Credenciales de autenticación inválidas", 
+        headers={"WWW-Authenticate": "Bearer"})
+    try:
+        username = jwt.decode(token, SECRET,algorithms=[ALGORITHM]).get("sub")
+        if username is None:
+            raise exception
+    except JWTError:
+        raise exception
     
-#     if user.disable:
-#         raise HTTPException(
-#             status_code=status.HTTP_400_BAD_REQUEST,
-#             detail="Usuario inactivo")
+    return search_user(username)
 
-#     return user
+
+async def current_user(user: User = Depends(auth_user)):
+    if user.disable:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Usuario inactivo")
+    return user
 
 # #operacion de autenticacion
 @app.post("/login")
@@ -71,11 +84,14 @@ async def login(form: OAuth2PasswordRequestForm = Depends()): #Esto significa qu
 
     user = search_user_db(form.username)
 
-    if not crypt.verify(form.password, user.password): #Aca se verifica si la contraseña es correcta o no Le pasamos la contraseña original, la del formulario + la de db que está encriptada
+    if not crypt.verify(form.password, user.password):
         raise HTTPException(status_code=400, detail="La contraseña no es correcto")
     
-    return{"access_token": user.username, "token_type": "bearer"}
+    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_DURATION)
+    access_token = {"sub": user.username, "exp": expire}
 
-# @app.get("/users/me")
-# async def me(user: User = Depends(current_user)):
-#     return user
+    return{"access_token": jwt.encode(access_token, SECRET,algorithm=ALGORITHM), "token_type": "bearer"}
+
+@app.get("/users/me")
+async def me(user: User = Depends(current_user)):
+    return user

@@ -33,3 +33,7 @@ En nuestro proyecto, al usar FastAPI, la documentación se crea de forma automá
 [Swagger UI](https://swagger.io/tools/swagger-ui/)
 
 [redoc](https://dev.to/williamdelaespriella/redoc-documentacion-agil-libre-de-dependencias-1jhk)
+
+## Enlace para encriptar contraseña - Bcrypt
+
+[Bcrypt generator](https://bcrypt-generator.com/https://bcrypt-generator.com/)
