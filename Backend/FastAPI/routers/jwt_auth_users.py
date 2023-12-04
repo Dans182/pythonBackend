@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import jwt, JWTError
@@ -10,7 +10,7 @@ ACCESS_TOKEN_DURATION = 1
 #En terminal, de esta manera genero un secret openssl rand -hex 32
 SECRET = "bb8733a5834619c1b98b91ee5cc317b646a6937cee2decec006ce94d63748a55"
 
-app = FastAPI()
+router = APIRouter()
 
 oauth2 = OAuth2PasswordBearer(tokenUrl = "login")
 
@@ -54,7 +54,7 @@ def search_user_db(username: str):
         return UserDB(**users_db[username])
 
 async def auth_user(token: str = Depends(oauth2)):
-    exception: HTTPException(
+    exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Credenciales de autenticación inválidas", 
         headers={"WWW-Authenticate": "Bearer"})
@@ -62,7 +62,8 @@ async def auth_user(token: str = Depends(oauth2)):
         username = jwt.decode(token, SECRET,algorithms=[ALGORITHM]).get("sub")
         if username is None:
             raise exception
-    except JWTError:
+        
+    except JWTError: 
         raise exception
     
     return search_user(username)
@@ -76,7 +77,7 @@ async def current_user(user: User = Depends(auth_user)):
     return user
 
 # #operacion de autenticacion
-@app.post("/login")
+@router.post("/login")
 async def login(form: OAuth2PasswordRequestForm = Depends()): #Esto significa que esta operación va a recibir datos, pero no depende de nadie
     user_db = users_db.get(form.username)
     if not user_db:
@@ -92,6 +93,6 @@ async def login(form: OAuth2PasswordRequestForm = Depends()): #Esto significa qu
 
     return{"access_token": jwt.encode(access_token, SECRET,algorithm=ALGORITHM), "token_type": "bearer"}
 
-@app.get("/users/me")
+@router.get("/users/me")
 async def me(user: User = Depends(current_user)):
     return user
