@@ -5,6 +5,7 @@
 pip install fastapi[all]
 pip install python-jose[cryptography]
 pip install passlib[bcrypt]
+pip install pymongo
 
 ## Lanzar el servidor local
 
@@ -37,3 +38,20 @@ En nuestro proyecto, al usar FastAPI, la documentación se crea de forma automá
 ## Enlace para encriptar contraseña - Bcrypt
 
 [Bcrypt generator](https://bcrypt-generator.com/https://bcrypt-generator.com/)
+
+
+MongoDB Command Line Database Tools Download
+MongoDB Community Server Download
+https://www.mongodb.com/try/download/bi-connector
+https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-ubuntu/#std-label-install-mdb-community-ubuntu
+
+
+Para hacerla funcionar en local debemos
+Lanzo instancia de DB en local.
+Por terminal, primero lanzar la instancia
+mongod --dbpath "/home/userti/MongoDB/data"
+
+Despues desde VS Code, conectarla con su app 
+MongoDB for VS Code
+usando esta url
+mongodb://localhost
