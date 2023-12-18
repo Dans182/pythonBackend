@@ -39,11 +39,10 @@ En nuestro proyecto, al usar FastAPI, la documentación se crea de forma automá
 
 [Bcrypt generator](https://bcrypt-generator.com/https://bcrypt-generator.com/)
 
-
 MongoDB Command Line Database Tools Download
 MongoDB Community Server Download
-https://www.mongodb.com/try/download/bi-connector
-https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-ubuntu/#std-label-install-mdb-community-ubuntu
+[Bcrypt generator](https://www.mongodb.com/try/download/bi-connector)
+[Bcrypt generator](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-ubuntu/#std-label-install-mdb-community-ubuntu)
 
 Para hacerla funcionar en local debemos
 Lanzo instancia de DB en local.

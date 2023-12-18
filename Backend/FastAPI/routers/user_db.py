@@ -1,5 +1,7 @@
 from fastapi import APIRouter, HTTPException, status
-from .users import users_list, User
+from db.models.user import User
+from db.client import db_client
+from db.schemas.user import user_schema
 
 router = APIRouter(prefix = "/userdb", 
                    tags = ["userdb"], 
@@ -14,14 +16,19 @@ def search_user(id: int):
 
 #POST
 #Crear nuevo usuario
-@router.post("/", status_code=status.HTTP_201_CREATED) 
+@router.post("/", response_model=User, status_code=status.HTTP_201_CREATED) 
 async def user(user: User):
-    if type(search_user(user.id)) == User:
-        raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, detail="El usuario ya existe")
-        #return {"error": "El usuario ya existe"}
-    else:
-        users_list.append(user)
-        return user
+    # if type(search_user(user.id)) == User:
+    #     raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, detail="El usuario ya existe")
+    # else:
+
+    user_dict = dict(user)
+    del user_dict["id"] #Al dejarlo opcional en el schema, si no le pasamos ID lo crea como un null. Es por eso que mandamos a borrar el id, para que mongo me autogenere el ID
+    id = db_client.local.users.insert_one(user_dict).inserted_id
+    
+    new_user = user_schema(db_client.local.users.find_one({"_id": id}))
+
+    return User(**new_user)
 
 #GET
 #Por medio de un Path
