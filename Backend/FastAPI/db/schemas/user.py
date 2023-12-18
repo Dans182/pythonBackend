@@ -4,3 +4,6 @@ def user_schema(user) -> dict:
            "email": user["email"]}
 
 #Esto tranforma lo que viene de la DB a lo que espera que tiene nuestro objeto de modelo que es User, la clase User.
+
+def users_schema(users) -> list:
+    return [user_schema(user) for user in users ]
