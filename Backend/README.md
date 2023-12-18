@@ -45,13 +45,12 @@ MongoDB Community Server Download
 https://www.mongodb.com/try/download/bi-connector
 https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-ubuntu/#std-label-install-mdb-community-ubuntu
 
-
 Para hacerla funcionar en local debemos
 Lanzo instancia de DB en local.
 Por terminal, primero lanzar la instancia
 mongod --dbpath "/home/userti/MongoDB/data"
 
-Despues desde VS Code, conectarla con su app 
+Despues desde VS Code, conectarla con su app
 MongoDB for VS Code
 usando esta url
 mongodb://localhost
