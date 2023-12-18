@@ -12,4 +12,4 @@ users_list = []
 
 @router.get("/", response_model=list[User])
 async def users():
-    return users_schema(db_client.local.users.find())
+    return users_schema(db_client.users.find())

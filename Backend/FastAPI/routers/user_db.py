@@ -10,7 +10,7 @@ router = APIRouter(prefix = "/userdb",
 
 def search_user(field: str, key):
     try:
-        user = db_client.local.users.find_one({field: key}) #Aca lo busco en DB
+        user = db_client.users.find_one({field: key}) #Aca lo busco en DB
         return User(**user_schema(user))
     except:
         return {"error": "No se ha encontrado el usuario"} #aca creamos la transformacion a diccionario y creamos el objeto user
@@ -23,9 +23,9 @@ async def user(user: User):
                              detail="El usuario ya existe")
     user_dict = dict(user)
     del user_dict["id"] #Al dejarlo opcional en el schema, si no le pasamos ID lo crea como un null. Es por eso que mandamos a borrar el id, para que mongo me autogenere el ID
-    id = db_client.local.users.insert_one(user_dict).inserted_id
+    id = db_client.users.insert_one(user_dict).inserted_id
     
-    new_user = user_schema(db_client.local.users.find_one({"_id": id}))
+    new_user = user_schema(db_client.users.find_one({"_id": id}))
 
     return User(**new_user)
 
@@ -53,7 +53,7 @@ async def user(user: User):
     del user_dict["id"]
 
     try:
-        db_client.local.users.find_one_and_replace({"_id": ObjectId(user.id)}, user_dict)
+        db_client.users.find_one_and_replace({"_id": ObjectId(user.id)}, user_dict)
     except: 
         return {"error": "No se ha actualizado el usuario"}
     
@@ -62,7 +62,7 @@ async def user(user: User):
 #DELETE
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 async def user(id: str):
-    found = db_client.local.users.find_one_and_delete({"_id": ObjectId(id)})
+    found = db_client.users.find_one_and_delete({"_id": ObjectId(id)})
 
     if not found:
         return {"error": "No se ha actualizado el usuario"}
