@@ -11,6 +11,10 @@ pip install pymongo
 
 uvicorn main:app --reload
 
+## Lanzar MongoDB
+
+mongod --dbpath "/home/userti/MongoDB/data"
+
 ## Detener el servidor local
 
 Ctrol + C
@@ -39,10 +43,15 @@ En nuestro proyecto, al usar FastAPI, la documentación se crea de forma automá
 
 [Bcrypt generator](https://bcrypt-generator.com/https://bcrypt-generator.com/)
 
-MongoDB Command Line Database Tools Download
-MongoDB Community Server Download
-[Bcrypt generator](https://www.mongodb.com/try/download/bi-connector)
-[Bcrypt generator](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-ubuntu/#std-label-install-mdb-community-ubuntu)
+## Enlace para instalar MongoDB
+
+ -MongoDB Command Line Database Tools Download
+
+ -MongoDB Community Server Download
+
+[MongoDB](https://www.mongodb.com/try/download/bi-connector)
+
+[MongoDB](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-ubuntu/#std-label-install-mdb-community-ubuntu)
 
 Para hacerla funcionar en local debemos
 Lanzo instancia de DB en local.
