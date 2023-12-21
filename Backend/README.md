@@ -7,6 +7,8 @@ pip install python-jose[cryptography]
 pip install passlib[bcrypt]
 pip install pymongo
 
+`curl -fsSL https://deta.space/assets/space-cli.sh | sh`
+
 ## Lanzar el servidor local
 
 uvicorn main:app --reload
@@ -14,6 +16,10 @@ uvicorn main:app --reload
 ## Lanzar MongoDB
 
 mongod --dbpath "/home/userti/MongoDB/data"
+
+## Conectar MongoDB VS Code con Mongo Atlas
+
+mongodb+srv://test:<password@cluster0.vibelps.mongodb.net>/
 
 ## Detener el servidor local
 
@@ -62,3 +68,5 @@ Despues desde VS Code, conectarla con su app
 MongoDB for VS Code
 usando esta url
 mongodb://localhost
+
+[Deta](https://deta.space/docs/en/build/new-apps)
